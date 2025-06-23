@@ -10,9 +10,18 @@ import {
   Palette,
   Workflow,
 } from "lucide-react";
+import { useSkillsGsapAnimations } from "@/hooks/use-skills-gsap";
 
 const Skills = () => {
   const [activeTab, setActiveTab] = useState("frontend");
+  const {
+    sectionRef,
+    headerRef,
+    tabsRef,
+    tabChipsRef,
+    skillBarsRef,
+    cardsRef,
+  } = useSkillsGsapAnimations(activeTab);
 
   const skillCategories = {
     frontend: [
@@ -28,7 +37,12 @@ const Skills = () => {
       "Styled Components",
       "Progressive Web App",
     ],
-    frameworks: ["React.js", "Angular (14+)", "Next.js (14+)", "Vue.js (3+)"],
+    frameworks: [
+      "React.js",
+      "Angular (14+)",
+      "Next.js (App Router)",
+      "Vue.js (3+)",
+    ],
     tools: [
       "Webpack",
       "Native ES Modules",
@@ -90,11 +104,12 @@ const Skills = () => {
 
   return (
     <section
+      ref={sectionRef}
       id="skills"
       className="section bg-gradient-to-b from-background to-card pt-0"
     >
       <div className="container mx-auto">
-        <div className="text-center mb-16">
+        <div ref={headerRef} className="text-center mb-16">
           <Badge variant="outline" className="mb-2">
             Expertise
           </Badge>
@@ -109,12 +124,15 @@ const Skills = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          <div className="space-y-6">
+          <div ref={tabsRef} className="space-y-6">
             <Tabs defaultValue="frontend" className="w-full">
-              <TabsList className="grid grid-cols-2 md:grid-cols-4 w-full mb-6">
+              <TabsList
+                ref={tabChipsRef}
+                className="grid grid-cols-2 md:grid-cols-4 w-full mb-6"
+              >
                 <TabsTrigger
                   value="frontend"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 tab-chip"
                   onClick={() => setActiveTab("frontend")}
                 >
                   <Layout className="w-4 h-4" />
@@ -122,7 +140,7 @@ const Skills = () => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="frameworks"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 tab-chip"
                   onClick={() => setActiveTab("frameworks")}
                 >
                   <Code className="w-4 h-4" />
@@ -130,7 +148,7 @@ const Skills = () => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="tools"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 tab-chip"
                   onClick={() => setActiveTab("tools")}
                 >
                   <Terminal className="w-4 h-4" />
@@ -138,7 +156,7 @@ const Skills = () => {
                 </TabsTrigger>
                 <TabsTrigger
                   value="concepts"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 tab-chip"
                   onClick={() => setActiveTab("concepts")}
                 >
                   <Layers className="w-4 h-4" />
@@ -146,30 +164,32 @@ const Skills = () => {
                 </TabsTrigger>
               </TabsList>
 
-              {Object.keys(skillCategories).map((category) => (
-                <TabsContent key={category} value={category} className="mt-0">
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex items-center gap-2 mb-4">
-                        {categoryIcons[category as keyof typeof categoryIcons]}
-                        <h3 className="text-lg font-semibold capitalize">
-                          {category} Skills
-                        </h3>
-                      </div>
+              <div ref={cardsRef}>
+                {Object.keys(skillCategories).map((category) => (
+                  <TabsContent key={category} value={category} className="mt-0">
+                    <Card className="skill-card">
+                      <CardContent className="p-6">
+                        <div className="flex items-center gap-2 mb-4">
+                          {categoryIcons[category as keyof typeof categoryIcons]}
+                          <h3 className="text-lg font-semibold capitalize">
+                            {category} Skills
+                          </h3>
+                        </div>
 
-                      <div className="flex flex-wrap gap-2">
-                        {skillCategories[
-                          category as keyof typeof skillCategories
-                        ].map((skill) => (
-                          <span key={skill} className="tech-tag">
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-              ))}
+                        <div className="flex flex-wrap gap-2">
+                          {skillCategories[
+                            category as keyof typeof skillCategories
+                          ].map((skill) => (
+                            <span key={skill} className="tech-tag">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </TabsContent>
+                ))}
+              </div>
             </Tabs>
 
             <p className="text-muted-foreground text-sm">
@@ -179,7 +199,7 @@ const Skills = () => {
             </p>
           </div>
 
-          <div>
+          <div ref={skillBarsRef}>
             <div className="glass p-6 rounded-lg">
               <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
                 <Workflow className="w-5 h-5" />
@@ -195,9 +215,10 @@ const Skills = () => {
                     </div>
                     <div className="w-full bg-secondary rounded-full h-2.5">
                       <div
-                        className={`h-2.5 rounded-full ${skill.color}`}
+                        className={`h-2.5 rounded-full skill-bar-fill ${skill.color}`}
+                        data-width={`${skill.level}%`}
                         style={{
-                          width: `${skill.level}%`,
+                          width: 0,
                           transition: "width 1s ease-in-out",
                         }}
                       ></div>
@@ -206,18 +227,18 @@ const Skills = () => {
                 ))}
               </div>
 
-              <div className="mt-8 bg-background/30 p-4 rounded-md">
+              <div className="mt-8 bg-background/30 p-4 rounded-md ui-libraries-section">
                 <h4 className="font-medium flex items-center gap-2 mb-2">
                   <Palette className="w-4 h-4" />
                   <span>UI Libraries & Styling</span>
                 </h4>
                 <div className="flex flex-wrap gap-2">
-                  <Badge>Tailwind CSS</Badge>
-                  <Badge>Material UI</Badge>
-                  <Badge>Styled Components</Badge>
-                  <Badge>SCSS</Badge>
-                  <Badge>CSS Modules</Badge>
-                  <Badge>Shadow DOM</Badge>
+                  <Badge className="ui-badge">Tailwind CSS</Badge>
+                  <Badge className="ui-badge">Material UI</Badge>
+                  <Badge className="ui-badge">Styled Components</Badge>
+                  <Badge className="ui-badge">SCSS</Badge>
+                  <Badge className="ui-badge">CSS Modules</Badge>
+                  <Badge className="ui-badge">Shadow DOM</Badge>
                 </div>
               </div>
             </div>
