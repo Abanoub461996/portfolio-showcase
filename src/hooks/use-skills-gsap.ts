@@ -12,20 +12,6 @@ export function useSkillsGsapAnimations(activeTab: string) {
   const skillBarsRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
-  // Helper to animate skill bars after parent
-  const animateSkillBars = () => {
-    const skillBars = skillBarsRef.current?.querySelectorAll('.skill-bar-fill');
-    skillBars?.forEach((bar, index) => {
-      const targetWidth = bar.getAttribute('data-width');
-      gsap.to(bar, {
-        width: targetWidth,
-        duration: 1,
-        ease: "power2.out",
-        delay: 0.05 * index
-      });
-    });
-  };
-
   useEffect(() => {
     const ctx = gsap.context(() => {
       // Header animation
@@ -53,24 +39,50 @@ export function useSkillsGsapAnimations(activeTab: string) {
         }
       );
 
-      // Skill bars panel (right) animation, then trigger bar fill
-      gsap.fromTo(
+      // Skill bars timeline
+      const skillBarsTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: skillBarsRef.current,
+          start: "top 80%",
+          end: "bottom 20%",
+          toggleActions: "play none none reverse"
+        }
+      });
+
+      // Parent panel animation
+      skillBarsTimeline.fromTo(
         skillBarsRef.current,
         { x: 50, opacity: 0 },
         {
           x: 0,
           opacity: 1,
-          duration: 0.8,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: skillBarsRef.current,
-            start: "top 80%",
-            end: "bottom 20%",
-            toggleActions: "play none none reverse",
-            onEnter: animateSkillBars,
-            onEnterBack: animateSkillBars
-          }
+          duration: 0.5,
+          ease: "power2.out"
         }
+      );
+
+      // Bars fill animation (in)
+      skillBarsTimeline.fromTo(
+        skillBarsRef.current?.querySelectorAll('.skill-bar-fill'),
+        { width: 0 },
+        {
+          width: (i, el) => el.getAttribute('data-width'),
+          duration: 0.7,
+          ease: "power2.out",
+          stagger: 0.05
+        },
+        "<" // after parent
+      );
+
+      // Bars fill animation (out, on reverse) - now synced with parent exit
+      skillBarsTimeline.to(
+        skillBarsRef.current?.querySelectorAll('.skill-bar-fill'),
+        {
+          width: 0,
+          duration: 0.5,
+          ease: "power2.in"
+        },
+        "<" // at the same time as parent animates out
       );
 
       // UI Libraries badges
