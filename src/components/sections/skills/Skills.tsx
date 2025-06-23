@@ -11,11 +11,8 @@ import {
 import { useSkillsGsapAnimations } from "@/hooks/use-skills-gsap";
 import SkillBar from "./components/SkillBar";
 import SkillCard from "./components/SkillCard";
-import { SkillCategory, skillCategories, skillVisuals } from "./skills";
+import { SkillCategory, skillCategories, skillVisuals } from "./data";
 import UiLibrariesSection from "./components/UiLibrariesSection";
-
-
-
 
 const Skills:FC = () => {
   const [activeTab, setActiveTab] = useState<SkillCategory>('frontend');
@@ -59,7 +56,7 @@ const Skills:FC = () => {
             Technical Skills
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            With over 5 years of frontend development experience, I've mastered
+            With over 3 years of frontend development experience, I've mastered
             a wide range of technologies and methodologies to create exceptional
             web experiences.
           </p>

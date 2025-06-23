@@ -1,7 +1,5 @@
 import { FC } from "react";
-import { SkillVisual } from "../skills";
-
-
+import { SkillVisual } from "../data";
 
 const SkillBar:FC<SkillVisual> = ({ name, level, color }) => (
   <div className="space-y-1">

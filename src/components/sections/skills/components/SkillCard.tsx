@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { FC } from "react";
-import { SkillCategory, skillCategories } from "../skills";
+import { SkillCategory, skillCategories } from "../data";
 import { Layout, Code, Terminal, Layers } from "lucide-react";
 
 const categoryIcons: Record<SkillCategory, JSX.Element> = {

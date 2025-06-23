@@ -57,3 +57,12 @@ export const skillVisuals: SkillVisual[] = [
   { name: "HTML/CSS", level: 95, color: "bg-orange-500" },
   { name: "Angular", level: 60, color: "bg-red-600" },
 ];
+
+export const uiLibraries: string[] = [
+  'Tailwind CSS',
+  'Material UI',
+  'Styled Components',
+  'SCSS',
+  'CSS Modules',
+  'Shadow DOM',
+];
