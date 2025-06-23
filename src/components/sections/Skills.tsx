@@ -24,6 +24,12 @@ const Skills = () => {
   } = useSkillsGsapAnimations(activeTab);
 
   const skillCategories = {
+    frameworks: [
+      "React.js",
+      "Angular (14+)",
+      "Next.js (App Router)",
+      "Vue.js (3+)",
+    ],
     frontend: [
       "HTML5",
       "CSS3/SCSS",
@@ -37,12 +43,7 @@ const Skills = () => {
       "Styled Components",
       "Progressive Web App",
     ],
-    frameworks: [
-      "React.js",
-      "Angular (14+)",
-      "Next.js (App Router)",
-      "Vue.js (3+)",
-    ],
+
     tools: [
       "Webpack",
       "Native ES Modules",
@@ -170,7 +171,11 @@ const Skills = () => {
                     <Card className="skill-card">
                       <CardContent className="p-6">
                         <div className="flex items-center gap-2 mb-4">
-                          {categoryIcons[category as keyof typeof categoryIcons]}
+                          {
+                            categoryIcons[
+                              category as keyof typeof categoryIcons
+                            ]
+                          }
                           <h3 className="text-lg font-semibold capitalize">
                             {category} Skills
                           </h3>
