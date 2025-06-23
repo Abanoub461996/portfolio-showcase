@@ -4,7 +4,14 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export function useSkillsGsapAnimations(activeTab: string) {
+export function useSkillsGsapAnimations(activeTab: string): {
+  sectionRef: React.RefObject<HTMLElement>;
+  headerRef: React.RefObject<HTMLDivElement>;
+  tabsRef: React.RefObject<HTMLDivElement>;
+  tabChipsRef: React.RefObject<HTMLDivElement>;
+  skillBarsRef: React.RefObject<HTMLDivElement>;
+  cardsRef: React.RefObject<HTMLDivElement>;
+} {
   const sectionRef = useRef<HTMLElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -13,6 +20,7 @@ export function useSkillsGsapAnimations(activeTab: string) {
   const cardsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // GSAP context for scoping animations
     const ctx = gsap.context(() => {
       // Header animation
       gsap.fromTo(
@@ -34,8 +42,8 @@ export function useSkillsGsapAnimations(activeTab: string) {
             trigger: tabsRef.current,
             start: "top 80%",
             end: "bottom 20%",
-            toggleActions: "play none none reverse"
-          }
+            toggleActions: "play none none reverse",
+          },
         }
       );
 
@@ -45,8 +53,8 @@ export function useSkillsGsapAnimations(activeTab: string) {
           trigger: skillBarsRef.current,
           start: "top 80%",
           end: "bottom 20%",
-          toggleActions: "play none none reverse"
-        }
+          toggleActions: "play none none reverse",
+        },
       });
 
       // Parent panel animation
@@ -57,32 +65,37 @@ export function useSkillsGsapAnimations(activeTab: string) {
           x: 0,
           opacity: 1,
           duration: 0.5,
-          ease: "power2.out"
+          ease: "power2.out",
         }
       );
 
       // Bars fill animation (in)
+      const barFills =
+        skillBarsRef.current?.querySelectorAll<HTMLDivElement>(
+          ".skill-bar-fill"
+        );
       skillBarsTimeline.fromTo(
-        skillBarsRef.current?.querySelectorAll('.skill-bar-fill'),
+        barFills,
         { width: 0 },
         {
-          width: (i, el) => el.getAttribute('data-width'),
+          width: (i, el) =>
+            (el as HTMLElement).getAttribute("data-width") || "0%",
           duration: 0.7,
           ease: "power2.out",
-          stagger: 0.05
+          stagger: 0.05,
         },
-        "<" // after parent
+        "<" 
       );
 
       // Bars fill animation (out, on reverse) - now synced with parent exit
       skillBarsTimeline.to(
-        skillBarsRef.current?.querySelectorAll('.skill-bar-fill'),
+        barFills,
         {
           width: 0,
           duration: 0.5,
-          ease: "power2.in"
+          ease: "power2.in",
         },
-        "<" // at the same time as parent animates out
+        "<"
       );
 
       // UI Libraries badges
@@ -99,8 +112,8 @@ export function useSkillsGsapAnimations(activeTab: string) {
             trigger: ".ui-libraries-section",
             start: "top 85%",
             end: "bottom 15%",
-            toggleActions: "play none none reverse"
-          }
+            toggleActions: "play none none reverse",
+          },
         }
       );
     }, sectionRef);
@@ -110,27 +123,28 @@ export function useSkillsGsapAnimations(activeTab: string) {
     };
   }, []);
 
-  // Animate tech tags in the active tab when tab changes
   useEffect(() => {
-    const activeTabContent = cardsRef.current?.querySelector(
-      '[data-state="active"]'
-    ) as HTMLElement | null;
-    const techTags = activeTabContent?.querySelectorAll('.tech-tag');
-    if (techTags && techTags.length > 0) {
-      gsap.fromTo(
-        techTags,
-        { scale: 0, opacity: 0 },
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 0.4,
-          stagger: 0.05,
-          ease: "back.out(1.7)"
-        }
-      );
-    }
+    const timeout = setTimeout(() => {
+      const activeTabContent = cardsRef.current?.querySelector(
+        '[data-state="active"]'
+      ) as HTMLElement | null;
+      const techTags = activeTabContent?.querySelectorAll(".tech-tag");
+      if (techTags && techTags.length > 0) {
+        gsap.fromTo(
+          techTags,
+          { scale: 0, opacity: 0 },
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.4,
+            stagger: 0.05,
+            ease: "back.out(1.7)",
+          }
+        );
+      }
+    }, 0);
+    return () => clearTimeout(timeout);
   }, [activeTab]);
-
 
   return {
     sectionRef,
@@ -138,6 +152,6 @@ export function useSkillsGsapAnimations(activeTab: string) {
     tabsRef,
     tabChipsRef,
     skillBarsRef,
-    cardsRef
+    cardsRef,
   };
-} 
+}
