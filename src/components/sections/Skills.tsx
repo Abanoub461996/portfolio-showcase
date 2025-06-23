@@ -91,7 +91,7 @@ const Skills = () => {
   return (
     <section
       id="skills"
-      className="section bg-gradient-to-b from-background to-card"
+      className="section bg-gradient-to-b from-background to-card pt-0"
     >
       <div className="container mx-auto">
         <div className="text-center mb-16">
